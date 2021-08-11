@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>DICOM Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="./styles.css" />
+    <link rel="stylesheet" type="text/css" href="https://monkeyscript.github.io/aether/aether.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <h1>hello</h1>
+    <div id="dicomImage" style="height:50vh;border:1px solid #e5e5e5"></div>
+
+    <hr>
+    <input type="file" id="inputFile">
+</body>
+
+<script src="https://unpkg.com/cornerstone-core/dist/cornerstone.min.js"></script>
+<script src="./index.js"></script>
+
+<script>
+    const imageId = 'example://1';
+    const element = document.getElementById('dicomImage');
+    cornerstone.enable(element);
+    cornerstone.loadImage(imageId).then(function(image) {
+        cornerstone.displayImage(element, image);
+    });
+</script>
+
+</html>

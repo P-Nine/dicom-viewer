@@ -14,17 +14,14 @@
 
 <body>
     <h1>hello</h1>
-    <div id="dicomImage" style="height:50vh;border:1px solid #e5e5e5"></div>
-
-    <hr>
-    <input type="file" id="inputFile">
+    <div id="dicomImage" style="min-height:50vh;border:1px solid #e5e5e5"></div>
 </body>
 
 <script src="https://unpkg.com/cornerstone-core/dist/cornerstone.min.js"></script>
 <script src="./index.js"></script>
 
 <script>
-    const imageId = 'example://1';
+    const imageId = 'customImgLoader://p-nine.github.io/dicom-viewer/data/case-1/series-1/IM000001';
     const element = document.getElementById('dicomImage');
     cornerstone.enable(element);
     cornerstone.loadImage(imageId).then(function(image) {

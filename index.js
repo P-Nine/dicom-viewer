@@ -15,8 +15,6 @@ cornerstone.loadAndCacheImage(imageId).then(function (image) {
 
 // On mode change
 function setActiveMode(mode) {
-    // var newEl = renderEl.cloneNode(true);
-    // renderEl.parentNode.replaceChild(newEl, renderEl);
     activeMode = mode;
     switch (mode) {
         case 'WINDOW':

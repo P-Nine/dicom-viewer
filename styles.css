@@ -9,6 +9,7 @@ body {
 
 #renderEl {
     min-height: 50vh;
+    overflow: hidden;
 }
 
 .border {

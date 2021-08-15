@@ -6,68 +6,29 @@ cornerstoneWADOImageLoader.configure({
     }
 });
 
-const imageId = 'wadouri:https://p-nine.github.io/dicom-viewer/data/case-1/series-1/IM000001';
 const renderEl = document.querySelector('#renderEl');
 cornerstone.enable(renderEl);
-cornerstone.loadAndCacheImage(imageId).then(function (image) {
-    cornerstone.displayImage(renderEl, image);
-});
 
-// On mode change
-function setActiveMode(mode) {
-    activeMode = mode;
-    switch (mode) {
-        case 'WINDOW':
-            windowLevelMode();
-            break;
-        case 'ZOOMPAN':
-            zoomPanMode();
-            break;
-        default:
-            break;
-    }
-}
-setActiveMode('WINDOW');
-
-// Window level mode
-function windowLevelMode() {
-    document.querySelector('#activeMode').innerHTML = 'Window Mode : Drag to adjust window level.';
-
-    // Add event handlers to mouse move to adjust window/center
-    renderEl.addEventListener('mousedown', function (e) {
-        console.log('WINDOW')
-        let lastX = e.pageX;
-        let lastY = e.pageY;
-
-        function mouseMoveHandler(e) {
-            const deltaX = e.pageX - lastX;
-            const deltaY = e.pageY - lastY;
-            lastX = e.pageX;
-            lastY = e.pageY;
-            let viewport = cornerstone.getViewport(renderEl);
-            viewport.voi.windowWidth += (deltaX / viewport.scale);
-            viewport.voi.windowCenter += (deltaY / viewport.scale);
-            cornerstone.setViewport(renderEl, viewport);
-        };
-
-        function mouseUpHandler() {
-            document.removeEventListener('mousemove', mouseMoveHandler);
-            document.removeEventListener('mouseup', mouseUpHandler);
-        }
-        document.addEventListener('mousemove', mouseMoveHandler);
-        document.addEventListener('mouseup', mouseUpHandler);
+const imageId = 'wadouri:https://p-nine.github.io/dicom-viewer/data/case-1/series-1/IM000001';
+function updateTheImage(imageIndex) {
+    return cornerstone.loadAndCacheImage(imageId).then(function (image) {
+        const viewport = cornerstone.getViewport(renderEl);
+        cornerstone.displayImage(renderEl, image, viewport);
+        document.querySelector('#coords').textContent = "pageX=0, pageY=0, pixelX=0, pixelY=0";
     });
 }
 
-// Zoom and pan mode
-function zoomPanMode() {
-    document.querySelector('#activeMode').innerHTML = 'Zoom & Pan Mode : Pan by dragging and zoom using mouse wheel.';
+// load and display the image
+const imagePromise = updateTheImage(0);
 
-    // Add event handlers to pan image on mouse move
+// add handlers for mouse events once the image is loaded.
+imagePromise.then(function () {
+
+    // add event handlers to pan image on mouse move
     renderEl.addEventListener('mousedown', function (e) {
-        console.log('PAN')
         let lastX = e.pageX;
         let lastY = e.pageY;
+        const mouseButton = e.which;
 
         function mouseMoveHandler(e) {
             const deltaX = e.pageX - lastX;
@@ -75,84 +36,82 @@ function zoomPanMode() {
             lastX = e.pageX;
             lastY = e.pageY;
 
-            const viewport = cornerstone.getViewport(renderEl);
-            viewport.translation.x += (deltaX / viewport.scale);
-            viewport.translation.y += (deltaY / viewport.scale);
-            cornerstone.setViewport(renderEl, viewport);
-        }
-
-        function mouseUpHandler() {
-            document.removeEventListener('mousemove', mouseMoveHandler);
-            document.removeEventListener('mouseup', mouseUpHandler);
-        }
-
-        document.addEventListener('mousemove', mouseMoveHandler);
-        document.addEventListener('mouseup', mouseUpHandler);
-    });
-
-    // Mouse wheel events
-    const mouseWheelEvents = ['mousewheel', 'DOMMouseScroll'];
-    mouseWheelEvents.forEach(function (eventType) {
-        renderEl.addEventListener(eventType, function (e) {
-            console.log('ZOOM')
-            // Firefox e.detail > 0 scroll back, < 0 scroll forward
-            // chrome/safari e.wheelDelta < 0 scroll back, > 0 scroll forward
-            let viewport = cornerstone.getViewport(renderEl);
-            if (e.wheelDelta < 0 || e.detail > 0) {
-                viewport.scale -= 0.25;
-            } else {
-                viewport.scale += 0.25;
+            if (mouseButton === 1) {
+                let viewport = cornerstone.getViewport(renderEl);
+                viewport.voi.windowWidth += (deltaX / viewport.scale);
+                viewport.voi.windowCenter += (deltaY / viewport.scale);
+                cornerstone.setViewport(renderEl, viewport);
+            } else if (mouseButton === 2) {
+                let viewport = cornerstone.getViewport(renderEl);
+                viewport.translation.x += (deltaX / viewport.scale);
+                viewport.translation.y += (deltaY / viewport.scale);
+                cornerstone.setViewport(renderEl, viewport);
+            } else if (mouseButton === 3) {
+                let viewport = cornerstone.getViewport(renderEl);
+                viewport.scale += (deltaY / 100);
+                cornerstone.setViewport(renderEl, viewport);
             }
+        }
 
-            cornerstone.setViewport(renderEl, viewport);
+        function mouseUpHandler() {
+            document.removeEventListener('mouseup', mouseUpHandler);
+            document.removeEventListener('mousemove', mouseMoveHandler);
+        }
 
-            // Prevent page from scrolling
-            return false;
-        });
+        document.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('mouseup', mouseUpHandler);
     });
-}
 
-// Invert image
-function invert() {
-    console.log('kkk')
-    let viewport = cornerstone.getViewport(renderEl);
-    viewport.invert = !viewport.invert;
-    cornerstone.setViewport(renderEl, viewport);
-}
+    // const mouseWheelEvents = ['mousewheel', 'DOMMouseScroll'];
+    // mouseWheelEvents.forEach(function (eventType) {
+    //     renderEl.addEventListener(eventType, function (e) {
+    //         // Firefox e.detail > 0 scroll back, < 0 scroll forward
+    //         // chrome/safari e.wheelDelta < 0 scroll back, > 0 scroll forward
+    //         if (e.wheelDelta < 0 || e.detail > 0) {
+    //             if (currentImageIndex === 0) {
+    //                 updateTheImage(1);
+    //             }
+    //         } else {
+    //             if (currentImageIndex === 1) {
+    //                 updateTheImage(0);
+    //             }
+    //         }
 
-// Flip horizontally
-function hFlip() {
-    console.log('kkk')
-    let viewport = cornerstone.getViewport(renderEl);
-    viewport.hflip = !viewport.hflip;
-    cornerstone.setViewport(renderEl, viewport);
-}
+    //         // Prevent page from scrolling
+    //         return false;
+    //     });
+    // });
 
-// Flip vertically
-function vFlip() {
-    console.log('kkk')
-    let viewport = cornerstone.getViewport(renderEl);
-    viewport.vflip = !viewport.vflip;
-    cornerstone.setViewport(renderEl, viewport);
-}
+    document.querySelector('#invertBtn').addEventListener('click', function (e) {
+        const viewport = cornerstone.getViewport(renderEl);
+        viewport.invert = !viewport.invert;
+        cornerstone.setViewport(renderEl, viewport);
+    });
 
-// Rotate left
-function rotateLeft() {
-    console.log('kkk')
-    let viewport = cornerstone.getViewport(renderEl);
-    viewport.rotation-=90;
-    cornerstone.setViewport(renderEl, viewport);
-}
+    document.querySelector('#hFlipBtn').addEventListener('click', function (e) {
+        const viewport = cornerstone.getViewport(renderEl);
+        viewport.hflip = !viewport.hflip;
+        cornerstone.setViewport(renderEl, viewport);
+    });
 
-// Rotate right
-function rotateRight() {
-    console.log('kkk')
-    let viewport = cornerstone.getViewport(renderEl);
-    viewport.rotation+=90;
-    cornerstone.setViewport(renderEl, viewport);
-}
+    document.querySelector('#vFlipBtn').addEventListener('click', function (e) {
+        const viewport = cornerstone.getViewport(renderEl);
+        viewport.vflip = !viewport.vflip;
+        cornerstone.setViewport(renderEl, viewport);
+    });
 
-// Reset
-function reset() {
-    cornerstone.reset(renderEl);
-}
+    document.querySelector('#rotateBtn').addEventListener('click', function (e) {
+        const viewport = cornerstone.getViewport(renderEl);
+        viewport.rotation += 90;
+        cornerstone.setViewport(renderEl, viewport);
+    });
+
+    document.querySelector('#resetBtn').addEventListener('click', function (e) {
+        cornerstone.reset(renderEl);
+    });
+
+    renderEl.addEventListener('mousemove', function (event) {
+        const pixelCoords = cornerstone.pageToPixel(renderEl, event.pageX, event.pageY);
+        document.querySelector('#coords').textContent = "pageX=" + event.pageX + ", pageY=" + event.pageY + ", pixelX=" + pixelCoords.x + ", pixelY=" + pixelCoords.y;
+    });
+});

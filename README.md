@@ -1,1 +1,1 @@
-# dicom-viewer
+# DICOM-Viewer

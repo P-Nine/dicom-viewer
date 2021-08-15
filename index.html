@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>DICOM Viewer</title>
+    <title>DICOM-Viewer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="./styles.css" />
     <link rel="stylesheet" type="text/css" href="https://monkeyscript.github.io/aether/aether.css" />
@@ -14,22 +14,29 @@
 
 <body>
     <div class="container">
-        <h2>DICOM Viewer</h2>
-        <div id="renderEl" style="min-height:50vh;border:1px solid #e5e5e5;border-radius: 1rem;"></div>
-        <br>
-        Interaction Modes : 
-        <button onclick="setActiveMode('WINDOW')">Window Level</button>
-        <button onclick="setActiveMode('ZOOMPAN')">Zoom & Pan</button>
-        <br><br>
-        <span id="activeMode"></span>
-        <hr>
-        Misc Options : 
-        <button onclick="invert()">Invert</button>
-        <button onclick="hFlip()">HFlip</button>
-        <button onclick="vFlip()">VFlip</button>
-        <button onclick="rotateLeft()">Rotate Left</button>
-        <button onclick="rotateRight()">Rotate Right</button>
-        <button onclick="reset()">Reset</button>
+        <h2>DICOM-Viewer</h2>
+        <div id="renderEl" oncontextmenu="return false" onmousedown="return false" class="border"></div>
+        <div class="text-center text-sm mt-2 mb-4" id="coords">Loading...</div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <p class="text-sm text-secondary">MOUSE CONTROLS</p>
+                <ul class="mt-0 text-sm">
+                    <li>Left button click drag - Window/Level</li>
+                    <li>Middle button click drag - Pan</li>
+                    <li>Right button click drag - Zoom</li>
+                    <!-- <li>Mouse wheel - Scroll images</li> -->
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <p class="text-sm text-secondary">MISC CONTROLS</p>
+                <button id="invertBtn">Invert</button>
+                <button id="hFlipBtn">HFlip</button>
+                <button id="vFlipBtn">VFlip</button>
+                <button id="rotateBtn">Rotate</button>
+                <button id="resetBtn">Reset</button>
+            </div>
+        </div>
     </div>
 </body>
 

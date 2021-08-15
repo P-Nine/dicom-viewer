@@ -9,9 +9,12 @@ cornerstoneWADOImageLoader.configure({
 const renderEl = document.querySelector('#renderEl');
 cornerstone.enable(renderEl);
 
-const imageId = 'wadouri:https://p-nine.github.io/dicom-viewer/data/case-1/series-1/IM000001';
+const imageIds = Array.from({ length: 107 }).map(
+    (el, index) => 'wadouri:https://p-nine.github.io/dicom-viewer/data/case-1/series-2/IM' + String(index+1).padStart(6, '0')
+);
+let currentImageIndex = 0;
 function updateTheImage(imageIndex) {
-    return cornerstone.loadAndCacheImage(imageId).then(function (image) {
+    return cornerstone.loadAndCacheImage(imageIds[imageIndex]).then(function (image) {
         const viewport = cornerstone.getViewport(renderEl);
         cornerstone.displayImage(renderEl, image, viewport);
         document.querySelector('#coords').textContent = "pageX=0, pageY=0, pixelX=0, pixelY=0";
@@ -62,25 +65,26 @@ imagePromise.then(function () {
         document.addEventListener('mouseup', mouseUpHandler);
     });
 
-    // const mouseWheelEvents = ['mousewheel', 'DOMMouseScroll'];
-    // mouseWheelEvents.forEach(function (eventType) {
-    //     renderEl.addEventListener(eventType, function (e) {
-    //         // Firefox e.detail > 0 scroll back, < 0 scroll forward
-    //         // chrome/safari e.wheelDelta < 0 scroll back, > 0 scroll forward
-    //         if (e.wheelDelta < 0 || e.detail > 0) {
-    //             if (currentImageIndex === 0) {
-    //                 updateTheImage(1);
-    //             }
-    //         } else {
-    //             if (currentImageIndex === 1) {
-    //                 updateTheImage(0);
-    //             }
-    //         }
-
-    //         // Prevent page from scrolling
-    //         return false;
-    //     });
-    // });
+    const mouseWheelEvents = ['mousewheel', 'DOMMouseScroll'];
+    mouseWheelEvents.forEach(function (eventType) {
+        renderEl.addEventListener(eventType, function (e) {
+            // Firefox e.detail > 0 scroll back, < 0 scroll forward
+            // chrome/safari e.wheelDelta < 0 scroll back, > 0 scroll forward
+            if (e.wheelDelta < 0 || e.detail > 0) {
+                if(currentImageIndex<106) {
+                    currentImageIndex++;
+                    updateTheImage(currentImageIndex);
+                }
+            } else {
+                if(currentImageIndex>0) {
+                    currentImageIndex--;
+                    updateTheImage(currentImageIndex);
+                }
+            }
+            // Prevent page from scrolling
+            return false;
+        });
+    });
 
     document.querySelector('#invertBtn').addEventListener('click', function (e) {
         const viewport = cornerstone.getViewport(renderEl);

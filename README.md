@@ -1,6 +1,6 @@
 # DICOM-Viewer
 
-DICOM file viewer using Cornerstone JS with following controls.
+DICOM file viewer using cornerstone.js with following controls.
 
 - Window/Level
 - Pan

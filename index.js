@@ -9,9 +9,10 @@ cornerstoneWADOImageLoader.configure({
 const renderEl = document.querySelector('#renderEl');
 cornerstone.enable(renderEl);
 
-const imageIds = Array.from({ length: 107 }).map(
-    (el, index) => 'wadouri:https://p-nine.github.io/dicom-viewer/data/case-1/series-2/IM' + String(index+1).padStart(6, '0')
-);
+// const imageIds = Array.from({ length: 107 }).map(
+//     (el, index) => 'wadouri:https://p-nine.github.io/dicom-viewer/data/case-1/series-2/IM' + String(index+1).padStart(6, '0')
+// );
+const imageIds = ['wadouri:https://p-nine.github.io/dicom-viewer/data/case-1/series-3/00000258']
 let currentImageIndex = 0;
 function updateTheImage(imageIndex) {
     return cornerstone.loadAndCacheImage(imageIds[imageIndex]).then(function (image) {
@@ -71,7 +72,7 @@ imagePromise.then(function () {
             // Firefox e.detail > 0 scroll back, < 0 scroll forward
             // chrome/safari e.wheelDelta < 0 scroll back, > 0 scroll forward
             if (e.wheelDelta < 0 || e.detail > 0) {
-                if(currentImageIndex<106) {
+                if(currentImageIndex<imageIds.length-1) {
                     currentImageIndex++;
                     updateTheImage(currentImageIndex);
                 }

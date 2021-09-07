@@ -43,3 +43,19 @@ button {
 button:hover {
     color: #080e2c;
 }
+
+.series-selection {
+    border: 2px solid #080e2c;
+    color: #080e2c;
+    display: block;
+    border-radius: 1rem;
+    padding: .5rem 1rem;
+    margin-bottom: .5rem;
+    cursor: pointer;
+    transition: ease .2s;
+}
+
+.series-selection:hover {
+    border-color: #44eabb;
+    color: #44eabb;
+}

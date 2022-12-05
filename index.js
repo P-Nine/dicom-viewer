@@ -56,7 +56,7 @@ function onSeriesSelect(index) {
     
     // Generate image ids 
     imageIds = Array.from({ length: selectedSeries.imageCount }).map(
-        (el, index) => 'wadouri:https://wukong-project.github.io/dicom-viewer/data/case-1/series-' + selectedSeries.series + '/IM' + String(index+1).padStart(6, '0')
+        (el, index) => 'wadouri:https://thewukongproject.github.io/dicom-viewer/data/case-1/series-' + selectedSeries.series + '/IM' + String(index+1).padStart(6, '0')
     );
     
     // Reset index 
